@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.guilherme.api.model.ErrorMessage;
+import com.guilherme.api.model.Message;
 import com.guilherme.api.model.Produtos;
 import com.guilherme.api.repository.ProdutoRepository;
 
@@ -43,7 +45,8 @@ public class ProdutoController {
 			produtos = repository.findAll();
 		}
 
-		return produtos.isEmpty() ? new ResponseEntity<String>("", HttpStatus.NOT_FOUND)
+		return produtos.isEmpty() ? new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Produtos.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
 				: new ResponseEntity<List<Produtos>>(produtos, HttpStatus.OK);
 	}
 
@@ -52,7 +55,9 @@ public class ProdutoController {
 		Optional<Produtos> optional = repository.findById(id);
 
 		return optional.isPresent() ? new ResponseEntity<Produtos>(optional.get(), HttpStatus.OK)
-				: new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(Produtos.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+						HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -60,7 +65,9 @@ public class ProdutoController {
 		Produtos p = repository.save(produto);
 
 		return p != null ? new ResponseEntity<Produtos>(p, HttpStatus.CREATED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(Produtos.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -68,14 +75,18 @@ public class ProdutoController {
 		Optional<Produtos> optional = repository.findById(produto.getIdProduto());
 
 		if (!optional.isPresent()) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<ErrorMessage>(
+					new ErrorMessage(Produtos.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 
 		Produtos p = optional.get();
 		p = repository.save(produto);
 
 		return p != null ? new ResponseEntity<Produtos>(p, HttpStatus.ACCEPTED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(Produtos.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -83,19 +94,23 @@ public class ProdutoController {
 		Optional<Produtos> optional = repository.findById(produto.getIdProduto());
 
 		if (!optional.isPresent()) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<ErrorMessage>(
+					new ErrorMessage(Produtos.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 
 		Produtos p = repository.save(produto);
 
 		return p != null ? new ResponseEntity<Produtos>(p, HttpStatus.ACCEPTED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(Produtos.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deletePedidoItem(@RequestBody Produtos produto) {
 		repository.delete(produto);
 
-		return new ResponseEntity<String>("", HttpStatus.OK);
+		return new ResponseEntity<String>("deletado", HttpStatus.OK);
 	}
 }
