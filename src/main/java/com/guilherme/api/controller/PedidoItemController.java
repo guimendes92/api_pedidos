@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.guilherme.api.model.ErrorMessage;
+import com.guilherme.api.model.Message;
 import com.guilherme.api.model.PedidoItens;
 import com.guilherme.api.repository.PedidoItemRepository;
 
@@ -40,7 +42,10 @@ public class PedidoItemController {
 			pedidoItens = repository.findAll();
 		}
 
-		return pedidoItens.isEmpty() ? new ResponseEntity<String>("", HttpStatus.NOT_FOUND)
+		return pedidoItens.isEmpty()
+				? new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(PedidoItens.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+						HttpStatus.NOT_FOUND)
 				: new ResponseEntity<List<PedidoItens>>(pedidoItens, HttpStatus.OK);
 	}
 
@@ -49,7 +54,9 @@ public class PedidoItemController {
 		Optional<PedidoItens> optional = repository.findById(id);
 
 		return optional.isPresent() ? new ResponseEntity<PedidoItens>(optional.get(), HttpStatus.OK)
-				: new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(PedidoItens.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+						HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +64,9 @@ public class PedidoItemController {
 		PedidoItens p = repository.save(pedidoItem);
 
 		return p != null ? new ResponseEntity<PedidoItens>(p, HttpStatus.CREATED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(PedidoItens.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -65,14 +74,18 @@ public class PedidoItemController {
 		Optional<PedidoItens> optional = repository.findById(pedido.getIdItem());
 
 		if (!optional.isPresent()) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<ErrorMessage>(
+					new ErrorMessage(PedidoItens.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 
 		PedidoItens p = optional.get();
 		p = repository.save(pedido);
 
 		return p != null ? new ResponseEntity<PedidoItens>(p, HttpStatus.ACCEPTED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(PedidoItens.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -80,19 +93,23 @@ public class PedidoItemController {
 		Optional<PedidoItens> optional = repository.findById(pedido.getIdItem());
 
 		if (!optional.isPresent()) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<ErrorMessage>(
+					new ErrorMessage(PedidoItens.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 
 		PedidoItens p = repository.save(pedido);
 
 		return p != null ? new ResponseEntity<PedidoItens>(p, HttpStatus.ACCEPTED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(PedidoItens.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deletePedidoItem(@RequestBody PedidoItens pedido) {
 		repository.delete(pedido);
 
-		return new ResponseEntity<String>("", HttpStatus.OK);
+		return new ResponseEntity<String>("deletado", HttpStatus.OK);
 	}
 }
