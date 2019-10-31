@@ -55,7 +55,8 @@ public class ClienteController {
 
 		return optional.isPresent() ? new ResponseEntity<Clientes>(optional.get(), HttpStatus.OK)
 				: new ResponseEntity<ErrorMessage>(
-				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
+						new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+						HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -72,7 +73,8 @@ public class ClienteController {
 
 		if (!optional.isPresent()) {
 			new ResponseEntity<ErrorMessage>(
-				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
+					new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 
 		Clientes c = optional.get();
@@ -80,7 +82,8 @@ public class ClienteController {
 
 		return c != null ? new ResponseEntity<Clientes>(c, HttpStatus.ACCEPTED)
 				: new ResponseEntity<ErrorMessage>(
-				new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST)
+						new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -89,14 +92,16 @@ public class ClienteController {
 
 		if (!optional.isPresent()) {
 			new ResponseEntity<ErrorMessage>(
-				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
+					new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+					HttpStatus.NOT_FOUND);
 		}
 
 		Clientes c = repository.save(cliente);
 
 		return c != null ? new ResponseEntity<Clientes>(c, HttpStatus.ACCEPTED)
 				: new ResponseEntity<ErrorMessage>(
-				new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST)
+						new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
