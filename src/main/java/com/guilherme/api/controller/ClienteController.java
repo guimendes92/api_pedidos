@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.guilherme.api.model.Clientes;
 import com.guilherme.api.repository.ClienteRepository;
+import com.guilherme.api.model.ErrorMessage;
+import com.guilherme.api.model.Message;
 
 @RestController
 @RequestMapping("/cliente")
@@ -42,7 +44,8 @@ public class ClienteController {
 			clientes = repository.findAll();
 		}
 
-		return clientes.isEmpty() ? new ResponseEntity<String>("", HttpStatus.NOT_FOUND)
+		return clientes.isEmpty() ? new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
 				: new ResponseEntity<List<Clientes>>(clientes, HttpStatus.OK);
 	}
 
@@ -51,7 +54,8 @@ public class ClienteController {
 		Optional<Clientes> optional = repository.findById(id);
 
 		return optional.isPresent() ? new ResponseEntity<Clientes>(optional.get(), HttpStatus.OK)
-				: new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+				: new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -67,14 +71,16 @@ public class ClienteController {
 		Optional<Clientes> optional = repository.findById(cliente.getIdCliente());
 
 		if (!optional.isPresent()) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
 		}
 
 		Clientes c = optional.get();
 		c = repository.save(cliente);
 
 		return c != null ? new ResponseEntity<Clientes>(c, HttpStatus.ACCEPTED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST)
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -82,19 +88,21 @@ public class ClienteController {
 		Optional<Clientes> optional = repository.findById(cliente.getIdCliente());
 
 		if (!optional.isPresent()) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Clientes.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
 		}
 
 		Clientes c = repository.save(cliente);
 
 		return c != null ? new ResponseEntity<Clientes>(c, HttpStatus.ACCEPTED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()), HttpStatus.BAD_REQUEST)
 	}
 
 	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> deleteCliente(@RequestBody Clientes cliente) {
 		repository.delete(cliente);
 
-		return new ResponseEntity<String>("", HttpStatus.OK);
+		return new ResponseEntity<String>("deletado", HttpStatus.OK);
 	}
 }
