@@ -64,7 +64,9 @@ public class ClienteController {
 		Clientes c = repository.save(cliente);
 
 		return c != null ? new ResponseEntity<Clientes>(c, HttpStatus.CREATED)
-				: new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(Clientes.class.getSimpleName(), Message.BAD_REQUEST.getMessage()),
+						HttpStatus.BAD_REQUEST);
 	}
 
 	@PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
