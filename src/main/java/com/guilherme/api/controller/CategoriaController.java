@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.guilherme.api.model.Categorias;
+import com.guilherme.api.model.ErrorMessage;
+import com.guilherme.api.model.Message;
 import com.guilherme.api.repository.CategoriaRepository;
 
 @RestController
@@ -26,7 +28,8 @@ public class CategoriaController {
 	public ResponseEntity<?> getCategotias() {
 		List<Categorias> categorias = repository.findAll();
 
-		return categorias.isEmpty() ? new ResponseEntity<String>("", HttpStatus.NOT_FOUND)
+		return categorias.isEmpty() ? new ResponseEntity<ErrorMessage>(
+				new ErrorMessage(Categorias.class.getSimpleName(), Message.NOT_FOUND.getMessage()), HttpStatus.NOT_FOUND)
 				: new ResponseEntity<List<Categorias>>(categorias, HttpStatus.OK);
 	}
 
@@ -35,6 +38,8 @@ public class CategoriaController {
 		Optional<Categorias> optional = repository.findById(id);
 
 		return optional.isPresent() ? new ResponseEntity<Categorias>(optional.get(), HttpStatus.OK)
-				: new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+				: new ResponseEntity<ErrorMessage>(
+						new ErrorMessage(Categorias.class.getSimpleName(), Message.NOT_FOUND.getMessage()),
+						HttpStatus.NOT_FOUND);
 	}
 }
