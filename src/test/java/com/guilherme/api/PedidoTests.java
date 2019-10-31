@@ -92,7 +92,7 @@ public class PedidoTests {
 
 	@Test
 	void clienteResponse() {
-		ResponseEntity<Clientes> response = template.getForEntity("http://localhost:8080/api/pedido/3", Clientes.class);
+		ResponseEntity<Pedidos> response = template.getForEntity("http://localhost:8080/api/pedido/3", Pedidos.class);
 
 		assertThat(response.hasBody());
 	}
